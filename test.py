@@ -178,9 +178,25 @@ class TestLoaderTest(TestCase):
         names = loader.get_test_case_names(Test)
         assert names == []
         
+class TestRunner:
+
+    def __init__(self):
+        self.result = TestResult()
+
+    def run(self, test):
+        test.run(self.result)
+        print(self.result.summary())
+        return self.result
     
-result = TestResult()
 loader = TestLoader()
-suite = loader.make_suite(TestLoaderTest)
-suite.run(result)
-print(result.summary())
+test_case_suite = loader.make_suite(TestCaseTest)
+test_suite_suite = loader.make_suite(TestSuiteTest)
+test_load_suite = loader.make_suite(TestLoaderTest)
+
+suite = TestSuite()
+suite.add_test(test_case_suite)
+suite.add_test(test_suite_suite)
+suite.add_test(test_load_suite)
+
+runner = TestRunner()
+runner.run(suite)
